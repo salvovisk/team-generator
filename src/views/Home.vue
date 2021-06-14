@@ -2,35 +2,72 @@
   <!-- :style="player.selected ? 'selected' : ''" -->
   <WelcomeMsg v-show="MsgIsVisible" @close-msg="handleMsgClosing" />
 
-  <div class="carouselCards">
-    <div
-      class="playerSelectorContainer"
-      v-for="player in players"
-      :key="player.id"
-      :class="[player.selected ? 'isActive' : '', 'playerSelectorContainer']"
-    >
-      <div @click="toggleSelectedPlayer(player.id)" class="cardBody">
-        <img :src="player.avatar" alt="operator" class="cardImg" />
-        <div class="cardTextWrapper">
-          <h4
-            :class="[player.selected ? 'isActive-text' : '', 'cardTextTitle']"
-            class="cardTextTitle"
-          >
-            {{ player.name }}
-          </h4>
+  <section class="selectionSection" v-show="playerSelectionIsVisible">
+    <div class="carouselCards">
+      <div
+        v-for="player in players"
+        :key="player.id"
+        :class="[
+          findActivePlayer(player) ? 'isActive' : '',
+          'playerSelectorContainer',
+        ]"
+      >
+        <div @click="toggleSelectedPlayer(player)" class="cardBody">
+          <img :src="player.avatar" alt="operator" class="cardImg" />
+          <div class="cardTextWrapper">
+            <h4
+              :class="[
+                findActivePlayer(player) ? 'isActive-text' : '',
+                'cardTextTitle',
+              ]"
+              class="cardTextTitle"
+            >
+              {{ player.name }}
+            </h4>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="btnConfirm">
+    <div class="btnConfirm">
+      <button
+        class="defaultBtn"
+        v-show="confirmBtnIsVisible"
+        @click="handleTeamGenerator"
+      >
+        Confirm
+      </button>
+    </div>
+  </section>
+  <section class="generatedTeams">
+    <div
+      class="generatedTeamWrapper"
+      v-for="(team, teamKey) of teamsGenerated"
+      :key="teamKey"
+    >
+      <h2>TEAM {{ teamKey + 1 }}</h2>
+      <div class="teamsWrapper">
+        <ul v-for="(player, playerKey) of team" :key="playerKey">
+          <div class="playerInTeamsWrapper">
+            <div @click="toggleSelectedPlayer(player)" class="cardBodysm">
+              <img :src="player.avatar" alt="operator" class="cardImgsm" />
+              <div class="cardTextWrappersm">
+                <h4>
+                  {{ player.name }}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
     <button
       class="defaultBtn"
-      v-show="handleBtnShow()"
-      @click="handleTeamGenerator"
+      v-show="resetBtnIsVisible"
+      @click="resetTeamGenerator"
     >
-      Confirm
+      Reset
     </button>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -41,95 +78,113 @@ export default {
   },
   data() {
     return {
+      playerSelectionIsVisible: true,
       MsgIsVisible: true,
       selectedPlayer: [],
+      resetBtnIsVisible: false,
+      confirmBtnIsVisible: false,
+      teamsNumb: null,
       players: [
         {
           id: 0,
           name: "Paolo Brosio",
           avatar: require("../assets/avatar/operator1.jpeg"),
-          selected: false,
         },
         {
           id: 1,
           name: "Bruno Vespa",
           avatar: require("../assets/avatar/operator2.jpeg"),
-          selected: false,
         },
         {
           id: 2,
           name: "Majin Pingu",
           avatar: require("../assets/avatar/operator6.jpeg"),
-          selected: false,
         },
         {
           id: 3,
           name: "Papa Ratzinger",
           avatar: require("../assets/avatar/operator3.jpeg"),
-          selected: false,
         },
         {
           id: 4,
           name: "Pippo Baudo",
           avatar: require("../assets/avatar/operator4.jpeg"),
-          selected: false,
         },
         {
           id: 5,
           name: "Dov'è Bugo",
           avatar: require("../assets/avatar/operator5.jpeg"),
-          selected: false,
         },
         {
           id: 6,
           name: "Luca Giurato",
           avatar: require("../assets/avatar/operator1.jpeg"),
-          selected: false,
         },
         {
           id: 7,
           name: "Pazzo Cane",
           avatar: require("../assets/avatar/operator7.jpeg"),
-          selected: false,
         },
         {
           id: 8,
           name: "MassiCape",
           avatar: require("../assets/avatar/operator3.jpeg"),
-          selected: false,
         },
         {
           id: 9,
           name: "Orietta Berti",
           avatar: require("../assets/avatar/operator2.jpeg"),
-          selected: false,
         },
         {
           id: 10,
           name: "Alberto B.",
           avatar: require("../assets/avatar/operator7.jpeg"),
-          selected: false,
         },
       ],
       teamsGenerated: [],
     };
   },
+  computed: {
+    itemsLength() {
+      return this.selectedPlayer.length;
+    },
+  },
+  watch: {
+    itemsLength() {
+      if (this.selectedPlayer.length > 4) {
+        this.confirmBtnIsVisible = true;
+      }
+      if (this.selectedPlayer.length < 5) {
+        this.confirmBtnIsVisible = false;
+      }
+    },
+  },
   methods: {
+    toggleConfirmBtn() {
+      this.confirmBtnIsVisible = true;
+    },
     handleMsgClosing() {
       this.MsgIsVisible = !this.MsgIsVisible;
     },
-    toggleSelectedPlayer(id) {
-      this.players[id].selected = !this.players[id].selected;
-      this.selectedPlayer.push(this.players[id]);
-    },
-
-    handleBtnShow() {
-      const selectedPlayers = this.players.filter(
-        (key) => key.selected === true
-      );
-      if (selectedPlayers.length >= 5) {
-        return true;
+    toggleSelectedPlayer(player) {
+      if (this.selectedPlayer.includes(player)) {
+        let toRemove = player;
+        this.selectedPlayer = this.selectedPlayer.filter(
+          (item) => item !== toRemove
+        );
+      } else {
+        this.selectedPlayer.push(player);
       }
+    },
+    handleConfirmBtnShow() {
+      if (this.selectedPlayer.length <= 5) {
+        return false;
+      } else return true;
+    },
+    findActivePlayer(player) {
+      if (this.selectedPlayer.includes(player)) {
+        return true;
+      } else return false;
     },
     handleTeamGenerator() {
       const selectedPlayers = this.selectedPlayer;
@@ -137,7 +192,7 @@ export default {
         .map((i) => i.name)
         .join(", ");
 
-      const confirmMsg = `Are you sure you want to generate teams from these players: ${selectedPlayersNames}`;
+      const confirmMsg = `Sicuro di voler creare dei team con i seguenti player: ${selectedPlayersNames}?`;
 
       if (window.confirm(confirmMsg)) {
         let shuffle = selectedPlayers.sort(() => Math.random() - 0.5);
@@ -152,7 +207,10 @@ export default {
             tempArray.push(divide);
           }
           this.teamsGenerated.push(...tempArray);
-          console.log(this.teamsGenerated);
+          this.teamsNumb = this.teamsGenerated.length;
+          this.playerSelectionIsVisible = false;
+          this.resetBtnIsVisible = true;
+          this.MsgIsVisible = false;
           return tempArray;
         };
         switch (selectedPlayers.length) {
@@ -186,6 +244,14 @@ export default {
         }
       }
     },
+    resetTeamGenerator() {
+      this.MsgIsVisible = true;
+      this.playerSelectionIsVisible = true;
+      this.teamsNumb = 0;
+      this.selectedPlayer = [];
+      this.teamsGenerated = [];
+      this.resetBtnIsVisible = false;
+    },
   },
 };
 </script>
@@ -201,6 +267,11 @@ export default {
     width: 40px;
     text-align: center;
   }
+}
+.selectionSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .carouselCards {
   color: black;
@@ -287,6 +358,48 @@ export default {
   }
   &:focus {
     outline: none;
+  }
+}
+.generatedTeams {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+}
+.generatedTeamWrapper {
+  max-width: 100vw;
+  min-width: 100vw;
+}
+.teamsWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  & ul {
+    padding-bottom: 25px;
+    border-bottom: solid 1px #1d3557;
+  }
+}
+.playerInTeamsWrapper {
+  height: 64px;
+}
+
+.cardBodysm {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+.cardImgsm {
+  height: 64px;
+  width: 64px;
+  border-radius: 25px;
+  object-fit: cover;
+  margin-right: 25px;
+}
+.cardTextWrappersm {
+  & h4 {
+    font-size: 20px;
   }
 }
 </style>

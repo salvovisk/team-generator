@@ -18,5 +18,7 @@ export default {
 #app {
   font-family: "Poppins", sans-serif;
   padding-top: 10vh;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 </style>

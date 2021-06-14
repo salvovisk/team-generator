@@ -1,23 +1,19 @@
 <template>
   <section>
     <div class="welcomeMsg">
-      <i class="fas fa-times" @click="$emit('closeMsg')"></i>
       <h3 class="welcomeMsg-h3">
         Benvenuto nel miglior Team Generator che ci sia!
       </h3>
       <p class="welcomeMsg-parag">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus aliquam
-        nobis commodi soluta consequuntur non, nemo vitae ducimus culpa deleniti
-        nisi! Iste, totam! Tempore minus sunt itaque odit iste atque.
+        Premi su un giocatore per selezionarlo, non appena ne selezioni almeno
+        5, avrai la possibilità di generare le squadre!
       </p>
     </div>
   </section>
 </template>
 
 <script>
-export default {
-  emits: ["closeMsg"],
-};
+export default {};
 </script>
 
 
