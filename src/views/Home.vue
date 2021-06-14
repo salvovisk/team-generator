@@ -37,8 +37,8 @@
   <div class="btnConfirm">
     <button
       class="defaultBtn"
+      v-show="handleBtnShow()"
       @click="handleTeamGenerator"
-      v-show="handleBtnShow() && teamsNumb !== 0"
     >
       Confirm
     </button>
@@ -141,7 +141,7 @@ export default {
       const selectedPlayers = this.players.filter(
         (key) => key.selected === true
       );
-      if (selectedPlayers.length > 0) {
+      if (selectedPlayers.length >= 5) {
         return true;
       }
     },
@@ -156,7 +156,53 @@ export default {
       const confirmMsg = `Are you sure you want to create ${this.teamsNumb} teams from these players: ${selectedPlayersNames}`;
 
       if (window.confirm(confirmMsg)) {
-        console.log("confirmed");
+        const players = selectedPlayers;
+        let shuffle = players.sort(() => Math.random() - 0.5);
+
+        const chunkArray = (myArray, divider) => {
+          let i = 0;
+          let arrayLen = myArray.length;
+          let tempArray = [];
+          for (i = 0; i <= arrayLen; i += divider) {
+            let divide = myArray.slice(i, i + divider);
+            tempArray.push(divide);
+          }
+          this.teamsGenerated.push(...tempArray);
+          return tempArray;
+        };
+        switch (selectedPlayers.length) {
+          case 5:
+            {
+              let result = chunkArray(shuffle, 3);
+              console.log("case 5", result);
+              console.log(this.teamsGenerated);
+            }
+            break;
+          case 6:
+            {
+              let result = chunkArray(shuffle, 3);
+              console.log("case 6", result);
+            }
+            break;
+          case 7:
+            {
+              let result = chunkArray(shuffle, 4);
+              console.log("case 7", result);
+            }
+            break;
+          case 8:
+            {
+              let result = chunkArray(shuffle, 4);
+              console.log("case 8", result);
+            }
+            break;
+          case 9:
+            {
+              let result = chunkArray(shuffle, 3);
+              console.log("case 9", result);
+            }
+            break;
+        }
       }
     },
   },
