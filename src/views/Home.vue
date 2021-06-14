@@ -22,18 +22,6 @@
       </div>
     </div>
   </div>
-  <div class="teams-number-selection">
-    <h4>Number of Teams</h4>
-    <div class="numberCircles">
-      <span
-        v-for="num in maxTeams"
-        :key="num"
-        :class="[teamsNumb === num ? 'isActive-bullet' : '', 'dot']"
-        @click="selectTeams(num)"
-        >{{ num }}</span
-      >
-    </div>
-  </div>
   <div class="btnConfirm">
     <button
       class="defaultBtn"
@@ -54,8 +42,7 @@ export default {
   data() {
     return {
       MsgIsVisible: true,
-      maxTeams: [2, 3, 4, 5, 6],
-      teamsNumb: 0,
+      selectedPlayer: [],
       players: [
         {
           id: 0,
@@ -133,10 +120,9 @@ export default {
     },
     toggleSelectedPlayer(id) {
       this.players[id].selected = !this.players[id].selected;
+      this.selectedPlayer.push(this.players[id]);
     },
-    selectTeams(num) {
-      this.teamsNumb = num;
-    },
+
     handleBtnShow() {
       const selectedPlayers = this.players.filter(
         (key) => key.selected === true
@@ -146,62 +132,57 @@ export default {
       }
     },
     handleTeamGenerator() {
-      const selectedPlayers = this.players.filter(
-        (key) => key.selected === true
-      );
+      const selectedPlayers = this.selectedPlayer;
       const selectedPlayersNames = selectedPlayers
         .map((i) => i.name)
         .join(", ");
 
-      const confirmMsg = `Are you sure you want to create ${this.teamsNumb} teams from these players: ${selectedPlayersNames}`;
+      const confirmMsg = `Are you sure you want to generate teams from these players: ${selectedPlayersNames}`;
 
       if (window.confirm(confirmMsg)) {
-        const players = selectedPlayers;
-        let shuffle = players.sort(() => Math.random() - 0.5);
+        let shuffle = selectedPlayers.sort(() => Math.random() - 0.5);
 
         const chunkArray = (myArray, divider) => {
+          this.teamsGenerated = [];
           let i = 0;
           let arrayLen = myArray.length;
           let tempArray = [];
-          for (i = 0; i <= arrayLen; i += divider) {
+          for (i = 0; i < arrayLen; i += divider) {
             let divide = myArray.slice(i, i + divider);
             tempArray.push(divide);
           }
           this.teamsGenerated.push(...tempArray);
+          console.log(this.teamsGenerated);
           return tempArray;
         };
         switch (selectedPlayers.length) {
           case 5:
             {
-              let result = chunkArray(shuffle, 3);
-              console.log("case 5", result);
-              console.log(this.teamsGenerated);
+              chunkArray(shuffle, 3);
             }
             break;
           case 6:
             {
-              let result = chunkArray(shuffle, 3);
-              console.log("case 6", result);
+              chunkArray(shuffle, 3);
             }
             break;
           case 7:
             {
-              let result = chunkArray(shuffle, 4);
-              console.log("case 7", result);
+              chunkArray(shuffle, 4);
             }
             break;
           case 8:
             {
-              let result = chunkArray(shuffle, 4);
-              console.log("case 8", result);
+              chunkArray(shuffle, 4);
             }
             break;
           case 9:
             {
-              let result = chunkArray(shuffle, 3);
-              console.log("case 9", result);
+              chunkArray(shuffle, 3);
             }
             break;
+          default:
+            chunkArray(shuffle, 3);
         }
       }
     },
@@ -277,37 +258,22 @@ export default {
   border-radius: 50px;
   object-fit: cover;
 }
-.dot {
-  margin: 5px;
-  height: 46px;
-  width: 46px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.isActive-bullet {
-  transition: all 0.2s ease-in-out;
-  background-color: #1d3557;
-  color: white;
-}
+
 .btnConfirm {
   display: flex;
   justify-content: center;
 }
 .defaultBtn {
   margin-top: 25px;
-  min-width: 100px;
-  min-height: 30px;
+  min-width: 200px;
+  min-height: 60px;
   height: max-content;
-  background-color: #3d70b8;
+  background-color: #1d3557;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   color: white;
+  font-size: 20px;
   text-decoration: none;
-  font-family: "Lato", sans-serif;
   text-align: center;
   transition: background 250ms ease-in-out, transform 150ms ease;
   -webkit-appearance: none;
