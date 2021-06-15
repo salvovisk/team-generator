@@ -60,6 +60,8 @@
         </ul>
       </div>
     </div>
+  </section>
+  <div class="resetBtn">
     <button
       class="defaultBtn"
       v-show="resetBtnIsVisible"
@@ -67,7 +69,7 @@
     >
       Reset
     </button>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -239,6 +241,16 @@ export default {
               chunkArray(shuffle, 3);
             }
             break;
+          case 10:
+            {
+              chunkArray(shuffle, 4);
+            }
+            break;
+          case 11:
+            {
+              chunkArray(shuffle, 4);
+            }
+            break;
           default:
             chunkArray(shuffle, 3);
         }
@@ -268,11 +280,14 @@ export default {
     text-align: center;
   }
 }
-.selectionSection {
+/* .selectionSection {
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media (min-width: 768px) {
+    flex-direction: row;
 }
+} */
 .carouselCards {
   color: black;
   display: flex;
@@ -288,6 +303,12 @@ export default {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+  @media (min-width: 768px) {
+    padding-left: 20px;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 .playerSelectorContainer {
@@ -302,6 +323,11 @@ export default {
   transition: all 0.2s ease-in-out;
   perspective: 1000px;
   transform-style: preserve-3d;
+  @media (min-width: 768px) {
+    margin-bottom: 10px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
 }
 
 .isActive {
@@ -366,10 +392,18 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   text-align: center;
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: baseline;
+  }
 }
 .generatedTeamWrapper {
   max-width: 100vw;
   min-width: 100vw;
+  @media (min-width: 768px) {
+    min-width: 30vw;
+    margin-right: 20px;
+  }
 }
 .teamsWrapper {
   display: flex;
@@ -401,5 +435,9 @@ export default {
   & h4 {
     font-size: 20px;
   }
+}
+.resetBtn {
+  display: flex;
+  justify-content: center;
 }
 </style>
